@@ -1,7 +1,5 @@
 <template>
   <div class="home">
-    <img alt="MDB logo" src="../assets/logo-mdb-vue-small.png">
-    <HelloWorld msg="Only now, you can get all premium features & more with the best discounts of the year."/>
   </div>
 </template>
 
