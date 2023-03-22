@@ -37,7 +37,7 @@ export default {
       firebase.auth().signInWithEmailAndPassword(self.id + '@timproject.co.kr', self.password)
           .then(() => {
             alert('로그인 완료')
-            self.$router.push('/mainMap')
+            self.$router.push('/setGroup')
           })
           .catch((error) => {
             alert(error)
