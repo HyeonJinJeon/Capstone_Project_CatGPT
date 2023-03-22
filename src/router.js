@@ -21,14 +21,14 @@ const router = new Router({
       component: () => import('./views/SignIn.vue'),
     },
     {
-      path: '/home',
-      name: 'home',
-      component: () => import('./views/Home'),
-    },
-    {
       path: '/signUp',
       name: 'SignUp',
       component: () => import('./views/SignUp'),
+    },
+    {
+      path: '/setGroup',
+      name: 'GroupSet',
+      component: () => import('./views/GroupSet'),
     },
   ]
 })
