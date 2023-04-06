@@ -30,6 +30,11 @@ const router = new Router({
       name: 'GroupSet',
       component: () => import('./views/GroupSet'),
     },
+    {
+      path: '/mainChat',
+      name: 'MainChat',
+      component: () => import('./views/MainChat'),
+    },
   ]
 })
 const makeTitle = (title) =>

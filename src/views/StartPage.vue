@@ -2,8 +2,7 @@
   <div class="backgroundImg">
     <div style="width: 750px; height: 100vh; margin: 0 auto">
       <div class = "title">
-        <h2>Cat</h2>
-        <h2>GPT</h2>
+        <h2>Cat-GPT</h2>
       </div>
       <div class="smallTitle">
         <hr align = "center" width = "550px" color="white"/>
@@ -149,10 +148,11 @@ a {
 }
 .title {
   position: absolute;
-  /*width: 35%;*/
+  width: 30%;
   /*height: 40%;*/
   /*left: 10px;*/
-  top: 15vh;
+  margin-left: 0;
+  top: 25vh;
 
   /*font-family: 'Roboto';*/
   font-style: normal;
