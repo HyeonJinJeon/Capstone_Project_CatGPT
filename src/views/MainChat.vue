@@ -2,8 +2,7 @@
   <div class="chat">
     <div class="messages">
       <div v-for="message in messages" :key="message.id">
-        <div>{{ message.name }}:</div>
-        <div>{{ message.content }}</div>
+        <div>{{ message.name }}: {{ message.content }}</div>
       </div>
     </div>
     <div class="input">
