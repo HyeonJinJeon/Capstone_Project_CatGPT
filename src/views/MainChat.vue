@@ -1,11 +1,67 @@
 <template>
   <div>
+    <AddChat v-if="modal" @childData="chatName=$event, newChat()" @closeModal ="modal = false" :modal="modal"></AddChat>
     <div class="side">
+      <div>
+        <br>
+        <h3 style="color: #FFFFFF;">
+          {{ userInfo.name }}
+          <span>
+<!--            <button class="logOutBtn" @click="logout">Logout</button>-->
+          </span>
+        </h3>
+        <h6 style="color: #FFFFFF;">
+          현재 그룹 : {{firstGroupName}}
+        </h6>
+        <hr style="color: white;">
+      </div>
+      <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="selected">
+        <option selected disabled hidden value="">그룹을 설정해주세요</option>
+        <option
+            v-for="(groupName, i) in groupNames"
+            :key="groupName"
+            v-text="groupName"
+            :value="enterCodes[i]"
+            @mousedown="changeChat(selected)">
+        </option>
+      </select>
+      <span> <button class="btn-outline-light-blue" @click="groupChange(selected)" style="margin-left: 1vh; width: 9vh; height: 5vh; border-radius: 10px">그룹 변경</button></span> <br>
+      <button class="btn-outline-light-blue" style="border-radius: 10px; width: 33vh; height: 7vh; color: white; font-size: 20px; margin-bottom: 3vh" @click="modal=true">
+        <i class="fas fa-comment-medical"></i> 새로운 채팅
+      </button>
+      <table class="table" border="0" style="margin-left: auto; margin-right: auto; color: white; border-top-color:#061524;  border-color: #061524; border-radius: 10px;">
+        <thead>
+        <tr>
+        </tr>
+        </thead>
+        <tbody>
+        <tr style="height: 60px" @click="changeChat(i)" v-for="(chatList,i) in chatList" :key="i">
+          <td style="text-align: left; padding-left: 2vh">
+            <i class="far fa-comment fa-lg" style="padding-right: 2vh"></i>
+            <span style="font-size: 15px">{{chatList}}</span>
+            <i class="fas fa-trash-can fa-lg"></i>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="sideBottom">
+
+      </div>
     </div>
+
   <div class="chat">
-    <div class="messages">
-      <div v-for="message in messages" :key="message.id">
-        <div>{{ message.name }}: {{ message.content }}</div>
+    <div class="messages" id="messages">
+      <div v-if="messages.length==0" class="noMessage">
+        <h1>Cat-GPT</h1>
+        <p>채팅을 시작하세요</p>
+      </div>
+      <div v-for="message in messages.chatArr" :key="message.id">
+        <div v-if="message.userName=='Cat-GPT'" class="CatGPTMessage">
+          {{ message.userName }}: &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
+        </div>
+        <div v-if="message.userName!='Cat-GPT'" class="myMessage">
+          {{ message.userName }}: &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
+        </div>
       </div>
     </div>
     <div class="input">
@@ -19,28 +75,159 @@
 <script>
 import {firebase} from "@/firebase/firebaseConfig";
 import axios from "axios";
-
+import AddChat from "@/components/AddChat.vue";
+import addChat from "@/components/AddChat.vue";
 
 export default {
-  data() {
-    return {
-      messages: [],
-      message: ''
+  computed: {
+    addChat() {
+      return addChat
     }
   },
-  created() {
-    const db = firebase.firestore();
-    db.collection('messages')
-        .orderBy('createdAt')
-        .onSnapshot(snapshot => {
-          this.messages = snapshot.docs.map(doc => ({
-            id: doc.id,
-            name: doc.data().name,
-            content: doc.data().content
-          }))
-        })
+  components: {AddChat},
+  data() {
+    return {
+      userId: this.$store.state.user.uid,
+      fbCollection: 'users',
+      modal: false,
+      selected:'',
+      firstGroupName: localStorage.groupName,
+      groups: [],
+      userInfo: [],
+      groupNames: [],
+      groupName: [],
+      enterCodes: [],
+      chatName: '',
+      chatList: [],
+      selectedChat: '',
+      chatId: [],
+      selectedChatId: '',
+      messages: [],
+      message: '',
+      cnt: -1
+    }
+  },
+  mounted() {
+    this.getChatList()
+    this.getData()
   },
   methods: {
+    getData() {
+      const self = this;
+      const db = firebase.firestore();
+      db.collection(self.fbCollection)
+          .doc(self.userId)
+          .get()
+          .then((snapshot) => {
+            self.userInfo = snapshot.data();
+            self.groups.push(self.userInfo.groups);
+            // console.log(self.groups.length)
+            for(let i=0; i < self.groups[0].length; i++) {
+              // for(let j=0; j < self.groups[i].length; i++) {
+              self.groupNames.push(self.groups[0][i].groupName);
+              self.enterCodes.push(self.groups[0][i].enterCode)
+            }
+            // console.log(self.groupNames)
+            // console.log(self.enterCodes)
+            // }
+          })
+    },
+    getGroupName() {
+      const self = this;
+      const db = firebase.firestore();
+      db.collection("group")
+          .where("groupCode", "==", localStorage.groupCode)
+          .get()
+          .then(async (querySnapshot) => {
+            if (querySnapshot.size === 0) {
+              return
+            }
+            querySnapshot.forEach((doc) => {
+              const _data = doc.data();
+              _data.id = doc.id
+              // const date = new Date(_data.date.seconds * 1000);
+              // _data.date = getDate(date);
+              self.groupName.push(_data.groupName);
+              console.log(self.groupName)
+            });
+          })
+    },
+    async groupChange(selected) {    //현재 그룹 변경
+      const self = this;
+      await this.getGroupName()
+      console.log(this.groupName[0])
+
+      for(let i =0; i<self.groups[0].length; i++) {
+        if(self.enterCodes[i] == selected) {
+          localStorage.groupName = self.groupNames[i]
+          localStorage.groupCode = self.enterCodes[i]
+        }
+      }
+      this.$router.go();
+
+    },
+    changeChat(i){
+      this.selectedChat = this.chatList[i]
+      this.selectedChatId = this.chatId[i]
+      console.log('111',this.selectedChat)
+      console.log('222', this.selectedChatId)
+      const db = firebase.firestore();
+      db.collection("messages")
+          .where("chatName", '==', this.selectedChat)
+          .get()
+          .then((querySnapshot) => {
+            if (querySnapshot.size === 0) {
+              return
+            }
+            querySnapshot.forEach((doc) => {
+              this.messages = doc.data();
+              console.log(this.messages)
+            });
+            this.scrollToBottom()
+          })
+    },
+    getChatList(){
+      const self = this;
+      const db = firebase.firestore();
+      db.collection("messages")
+          .where("groupName", '==', this.firstGroupName)
+          .get()
+          .then((querySnapshot) => {
+                if (querySnapshot.size === 0) {
+                  console.log('채팅 없음')
+                }
+                querySnapshot.forEach((doc) => {
+                  const _data = doc.data();
+                  _data.id = doc.id
+                  self.chatId.push(_data.id);
+                  console.log("아이디 확인", self.chatId)
+                  self.chatList.push(_data.chatName);
+                });
+          })
+      console.log(this.chatList)
+    },
+    newChat(){
+      const db = firebase.firestore();
+      const _data = {            // data()에 있는 데이터가 바로 들어갈 수 없다.
+        chatName: this.chatName,
+        groupName: this.firstGroupName,
+        chatArr: [
+          {
+            content: '채팅을 시작해주세요',
+            createdAt: new Date(),
+            userName: 'Cat-GPT',
+          }
+        ]
+      }
+      db.collection('messages')
+          .add(_data)
+          .then(() => {
+            this.chatList=[]
+            this.chatId=[]
+            this.getChatList()
+            this.modal = false;
+          })
+    },
     sendMessage(message) {
       console.log(message)
       const data ={
@@ -68,28 +255,51 @@ export default {
       }
       // const { displayName, uid } = auth.currentUser
       db.collection('messages')
-          .add({
-            name: this.$store.state.user.displayName,
-            content: this.message,
-            createdAt: new Date(),
+          .doc(this.selectedChatId)
+          .update({
+            chatArr: firebase.firestore.FieldValue.arrayUnion({
+              userName: this.$store.state.user.displayName,
+              content: this.message,
+              createdAt: new Date(),
+            })
             // uid: this.uid
           })
           .then(() => {
             this.saveGptMessage(res)
+            this.created()
           })
       this.message = ''
+    },
+    created() {
+      const db = firebase.firestore();
+      db.collection('messages')
+          .doc(this.selectedChatId)
+          .onSnapshot(snapshot => {
+            this.messages = snapshot.data()
+            console.log('33', this.messages)
+            // `this.messages` 값 업데이트 후, 이후 로직 처리
+          })
+    },
+    scrollToBottom() {
+      const element = document.getElementById('messages');
+      element.scrollTop = element.scrollHeight - element.offsetHeight;
     },
     saveGptMessage(res) {
       console.log('222', res)
       const db = firebase.firestore();
       // const { displayName, uid } = auth.currentUser
       db.collection('messages')
-          .add({
-            name: 'Cat-GPT',
-            content: res,
-            createdAt: new Date(),
+          .doc(this.selectedChatId)
+          .update({
+            chatArr: firebase.firestore.FieldValue.arrayUnion({
+              userName: 'Cat-GPT',
+              content: res,
+              createdAt: new Date(),
+            })
             // uid: this.uid
-          })
+          }).then(
+          this.scrollToBottom
+      )
       this.message = ''
     }
   }
@@ -100,11 +310,38 @@ export default {
 .chat {
   display: flex;
   flex-direction: column;
-  width: ;
+  margin-left: 40vh;
   height: 100%;
 }
 
+.side {
+  position: absolute;
+  background-color: #0e2842;
+  width: 35vh;
+  height: 100vh;
+}
+
+.noMessage {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.CatGPTMessage {
+  background-color: #cfd9df;
+  padding: 30px;
+  text-align: left;
+}
+
+.myMessage {
+  padding: 30px;
+  text-align: left;
+}
+
 .messages {
+  height: 93vh;
   flex-grow: 1;
   overflow-y: scroll;
   padding: 10px;
@@ -120,6 +357,8 @@ export default {
 }
 
 .input {
+  width: 80vh;
+  margin: auto;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -135,7 +374,7 @@ export default {
 }
 
 .input button {
-  background-color: #4CAF50;
+  background-color: #0e2842;
   color: white;
   border: none;
   padding: 10px;
@@ -145,6 +384,30 @@ export default {
 }
 
 .input button:hover {
-  background-color: #3e8e41;
+  background-color: #0e2842;
+}
+
+td:hover{
+  background-color: #2c3e50;
+  border-radius: 20px;
+}
+
+button:hover{
+  background-color: #2c3e50;
+}
+
+.table td, .table th {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #061524;
+}
+.sideBottom{
+  position: absolute;
+  top: 60vh;
+  background-color: #061524;
+  width: 35vh;
+  height: 40vh;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
 }
 </style>
