@@ -83,7 +83,7 @@ export default {
                       phoneNum: self.phoneNum,
                       id: self.id,
                       howLogin: '일반 로그인',
-
+                      groups: [],
                       code: self.randomStr,
                       otherCode: [self.randomStr]
                     })
