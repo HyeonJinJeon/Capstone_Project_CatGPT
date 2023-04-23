@@ -2,18 +2,51 @@
   <div>
     <AddChat v-if="modal" @childData="chatName=$event, newChat()" @closeModal ="modal = false" :modal="modal"></AddChat>
     <div class="side">
-      <button @click="modal=true">새로운 채팅</button>
-      <table class="table" border="1" style="margin-left: auto; margin-right: auto; color: white">
+      <div>
+        <br>
+        <h3 style="color: #FFFFFF;">
+          {{ userInfo.name }}
+          <span>
+<!--            <button class="logOutBtn" @click="logout">Logout</button>-->
+          </span>
+        </h3>
+        <h6 style="color: #FFFFFF;">
+          현재 그룹 : {{firstGroupName}}
+        </h6>
+        <hr style="color: white;">
+      </div>
+      <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="selected">
+        <option selected disabled hidden value="">그룹을 설정해주세요</option>
+        <option
+            v-for="(groupName, i) in groupNames"
+            :key="groupName"
+            v-text="groupName"
+            :value="enterCodes[i]"
+            @mousedown="changeChat(selected)">
+        </option>
+      </select>
+      <span> <button class="btn-outline-light-blue" @click="groupChange(selected)" style="margin-left: 1vh; width: 9vh; height: 5vh; border-radius: 10px">그룹 변경</button></span> <br>
+      <button class="btn-outline-light-blue" style="border-radius: 10px; width: 33vh; height: 7vh; color: white; font-size: 20px; margin-bottom: 3vh" @click="modal=true">
+        <i class="fas fa-comment-medical"></i> 새로운 채팅
+      </button>
+      <table class="table" border="0" style="margin-left: auto; margin-right: auto; color: white; border-top-color:#061524;  border-color: #061524; border-radius: 10px;">
         <thead>
         <tr>
         </tr>
         </thead>
         <tbody>
-        <tr @click="changeChat(i)" v-for="(chatList,i) in chatList" :key="i">
-          <td>{{chatList}}</td>
+        <tr style="height: 60px" @click="changeChat(i)" v-for="(chatList,i) in chatList" :key="i">
+          <td style="text-align: left; padding-left: 2vh">
+            <i class="far fa-comment fa-lg" style="padding-right: 2vh"></i>
+            <span style="font-size: 15px">{{chatList}}</span>
+            <i class="fas fa-trash-can fa-lg"></i>
+          </td>
         </tr>
         </tbody>
       </table>
+      <div class="sideBottom">
+
+      </div>
     </div>
 
   <div class="chat">
@@ -54,7 +87,16 @@ export default {
   components: {AddChat},
   data() {
     return {
+      userId: this.$store.state.user.uid,
+      fbCollection: 'users',
       modal: false,
+      selected:'',
+      firstGroupName: localStorage.groupName,
+      groups: [],
+      userInfo: [],
+      groupNames: [],
+      groupName: [],
+      enterCodes: [],
       chatName: '',
       chatList: [],
       selectedChat: '',
@@ -67,8 +109,63 @@ export default {
   },
   mounted() {
     this.getChatList()
+    this.getData()
   },
   methods: {
+    getData() {
+      const self = this;
+      const db = firebase.firestore();
+      db.collection(self.fbCollection)
+          .doc(self.userId)
+          .get()
+          .then((snapshot) => {
+            self.userInfo = snapshot.data();
+            self.groups.push(self.userInfo.groups);
+            // console.log(self.groups.length)
+            for(let i=0; i < self.groups[0].length; i++) {
+              // for(let j=0; j < self.groups[i].length; i++) {
+              self.groupNames.push(self.groups[0][i].groupName);
+              self.enterCodes.push(self.groups[0][i].enterCode)
+            }
+            // console.log(self.groupNames)
+            // console.log(self.enterCodes)
+            // }
+          })
+    },
+    getGroupName() {
+      const self = this;
+      const db = firebase.firestore();
+      db.collection("group")
+          .where("groupCode", "==", localStorage.groupCode)
+          .get()
+          .then(async (querySnapshot) => {
+            if (querySnapshot.size === 0) {
+              return
+            }
+            querySnapshot.forEach((doc) => {
+              const _data = doc.data();
+              _data.id = doc.id
+              // const date = new Date(_data.date.seconds * 1000);
+              // _data.date = getDate(date);
+              self.groupName.push(_data.groupName);
+              console.log(self.groupName)
+            });
+          })
+    },
+    async groupChange(selected) {    //현재 그룹 변경
+      const self = this;
+      await this.getGroupName()
+      console.log(this.groupName[0])
+
+      for(let i =0; i<self.groups[0].length; i++) {
+        if(self.enterCodes[i] == selected) {
+          localStorage.groupName = self.groupNames[i]
+          localStorage.groupCode = self.enterCodes[i]
+        }
+      }
+      this.$router.go();
+
+    },
     changeChat(i){
       this.selectedChat = this.chatList[i]
       this.selectedChatId = this.chatId[i]
@@ -93,7 +190,7 @@ export default {
       const self = this;
       const db = firebase.firestore();
       db.collection("messages")
-          .where("groupName", '==', 'CATS')
+          .where("groupName", '==', this.firstGroupName)
           .get()
           .then((querySnapshot) => {
                 if (querySnapshot.size === 0) {
@@ -113,7 +210,7 @@ export default {
       const db = firebase.firestore();
       const _data = {            // data()에 있는 데이터가 바로 들어갈 수 없다.
         chatName: this.chatName,
-        groupName: 'CATS',
+        groupName: this.firstGroupName,
         chatArr: [
           {
             content: '채팅을 시작해주세요',
@@ -219,8 +316,8 @@ export default {
 
 .side {
   position: absolute;
-  background-color: #2c3e50;
-  width: 40vh;
+  background-color: #0e2842;
+  width: 35vh;
   height: 100vh;
 }
 
@@ -277,7 +374,7 @@ export default {
 }
 
 .input button {
-  background-color: #4CAF50;
+  background-color: #0e2842;
   color: white;
   border: none;
   padding: 10px;
@@ -287,6 +384,30 @@ export default {
 }
 
 .input button:hover {
-  background-color: #3e8e41;
+  background-color: #0e2842;
+}
+
+td:hover{
+  background-color: #2c3e50;
+  border-radius: 20px;
+}
+
+button:hover{
+  background-color: #2c3e50;
+}
+
+.table td, .table th {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #061524;
+}
+.sideBottom{
+  position: absolute;
+  top: 60vh;
+  background-color: #061524;
+  width: 35vh;
+  height: 40vh;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
 }
 </style>
