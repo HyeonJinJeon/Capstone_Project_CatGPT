@@ -45,7 +45,18 @@
         </tbody>
       </table>
       <div class="sideBottom">
-
+        <br>
+        <br>
+        <p @click="goUserInfo">회원정보 수정</p>
+        <br>
+        <p @click="goGroupSet">그룹 관리</p>
+        <br>
+        <p @click="goDocUpload">문서 업로드</p>
+        <br>
+        <p @click="logout">로그아웃</p>
+        <br>
+        <br>
+        <p style="color:gray;">created by CATS</p>
       </div>
     </div>
 
@@ -301,6 +312,21 @@ export default {
           this.scrollToBottom
       )
       this.message = ''
+    },
+    goUserInfo() {
+      this.$router.push('/userInfo')
+    },
+    goGroupSet() {
+      this.$router.push('/setGroup')
+    },
+    goDocUpload() {
+      this.$router.push('/docUpload')
+    },
+    logout() {
+      delete localStorage.groupCode
+      delete localStorage.groupName
+      firebase.auth().signOut()
+      this.$router.push('/')
     }
   }
 }
@@ -405,9 +431,14 @@ button:hover{
   position: absolute;
   top: 60vh;
   background-color: #061524;
+  color: white;
   width: 35vh;
   height: 40vh;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
 }
+.sideBottom p:hover {
+  color: gray;
+}
+
 </style>
