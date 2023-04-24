@@ -2,12 +2,11 @@
   <div class="chat">
     <div class="messages">
       <div v-for="message in messages" :key="message.id">
-        <div>{{ message.name }}:</div>
-        <div>{{ message.content }}</div>
+        <div>{{ message.name }}: {{ message.content }}</div>
       </div>
     </div>
     <div class="input">
-      <input type="text" v-model="message" placeholder="메시지 입력">
+      <input type="text" v-model="message" placeholder="메시지 입력" v-on:keypress.enter.prevent=sendMessage>
       <button @click="sendMessage">전송</button>
     </div>
   </div>
