@@ -35,6 +35,16 @@ const router = new Router({
       name: 'MainChat',
       component: () => import('./views/MainChat'),
     },
+    {
+      path: '/userInfo',
+      name: 'UserInfo',
+      component: () => import('./views/UserInfo'),
+    },
+    {
+      path: '/docUpload',
+      name: 'DocUpload',
+      component: () => import('./views/DocUpload'),
+    },
   ]
 })
 const makeTitle = (title) =>
