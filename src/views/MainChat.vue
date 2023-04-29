@@ -29,21 +29,23 @@
       <button class="btn-outline-light-blue" style="border-radius: 10px; width: 33vh; height: 7vh; color: white; font-size: 20px; margin-bottom: 3vh" @click="modal=true">
         <i class="fas fa-comment-medical"></i> 새로운 채팅
       </button>
-      <table class="table" border="0" style="margin-left: auto; margin-right: auto; color: white; border-top-color:#061524;  border-color: #061524; border-radius: 10px;">
-        <thead>
-        <tr>
-        </tr>
-        </thead>
-        <tbody>
-        <tr style="height: 60px" @click="changeChat(i)" v-for="(chatList,i) in chatList" :key="i">
-          <td style="text-align: left; padding-left: 2vh">
-            <i class="far fa-comment fa-lg" style="padding-right: 2vh"></i>
-            <span style="font-size: 15px">{{chatList}}</span>
-            <i class="fas fa-trash-can fa-lg"></i>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="sideTable" style="height:30vh; overflow:auto;">
+        <table class="table" border="0" style="margin-left: auto; margin-right: auto; color: white; border-top-color:#061524;  border-color: #061524; border-radius: 10px;">
+          <thead>
+          <tr>
+          </tr>
+          </thead>
+          <tbody style="max-height: 100px; overflow-y: auto;">
+          <tr @click="changeChat(i)" v-for="(chatList,i) in chatList" :key="i">
+            <td style="text-align: left; padding-left: 2vh">
+              <i class="far fa-comment fa-lg" style="padding-right: 2vh"></i>
+              <span style="font-size: 15px">{{chatList}}</span>
+              <i class="fas fa-trash-can fa-lg"></i>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
       <div class="sideBottom">
         <br>
         <br>
@@ -416,6 +418,7 @@ export default {
 td:hover{
   background-color: #2c3e50;
   border-radius: 20px;
+  cursor: pointer;
 }
 
 button:hover{
@@ -439,6 +442,27 @@ button:hover{
 }
 .sideBottom p:hover {
   color: gray;
+  cursor: pointer;
+}
+/* 스크롤바의 전체 영역 */
+.sideTable::-webkit-scrollbar {
+  width: 10px; /* 스크롤바의 너비 */
+}
+
+/* 스크롤바의 트랙(배경) */
+.sideTable::-webkit-scrollbar-track {
+  background-color: #0e2842; /* 스크롤바의 배경색 */
+}
+
+/* 스크롤바의 색상 */
+.sideTable::-webkit-scrollbar-thumb {
+  background-color: #aaa; /* 스크롤바의 색상 */
+  border-radius: 5px; /* 스크롤바의 모서리를 둥글게 만듦 */
+}
+
+/* 스크롤바가 활성화(마우스 클릭)된 상태 */
+.sideTable::-webkit-scrollbar-thumb:hover {
+  background-color: #999; /* 스크롤바의 색상 */
 }
 
 </style>
