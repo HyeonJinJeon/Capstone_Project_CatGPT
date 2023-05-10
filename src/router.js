@@ -41,6 +41,11 @@ const router = new Router({
       component: () => import('./views/UserInfo'),
     },
     {
+      path: '/myGroupSet',
+      name: 'MyGroupSet',
+      component: () => import('./views/MyGroupSet'),
+    },
+    {
       path: '/docUpload',
       name: 'DocUpload',
       component: () => import('./views/DocUpload'),
