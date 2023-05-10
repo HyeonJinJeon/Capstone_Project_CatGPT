@@ -5,6 +5,8 @@ node_modules
 /tests/e2e/videos/
 /tests/e2e/screenshots/
 
+/src/server
+
 # local env files
 .env.local
 .env.*.local
@@ -22,3 +24,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+key.py
+client.py
+

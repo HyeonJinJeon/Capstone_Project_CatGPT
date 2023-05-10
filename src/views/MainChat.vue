@@ -68,18 +68,19 @@
         <h1>Cat-GPT</h1>
         <p>채팅을 시작하세요</p>
       </div>
-      <div v-for="message in messages.chatArr" :key="message.id">
+      <div class="existMessage" v-for="message in messages.chatArr" :key="message.id">
         <div v-if="message.userName=='Cat-GPT'" class="CatGPTMessage">
-          {{ message.userName }}: &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
+          <img src="../assets/images/catGPT.jpg" height="40px" width="40px"/>
+          : &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
         </div>
         <div v-if="message.userName!='Cat-GPT'" class="myMessage">
           {{ message.userName }}: &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
         </div>
       </div>
     </div>
-    <div class="input">
+    <div v-if="messages.length!=0" class="input">
       <input type="text" v-model="message" placeholder="메시지 입력" v-on:keypress.enter.prevent=sendMessage>
-      <button @click="sendMessage(message)">전송</button>
+      <button id="sendBtn" @click="sendMessage(message)">전송</button>
     </div>
   </div>
   </div>
@@ -204,6 +205,7 @@ export default {
       const db = firebase.firestore();
       db.collection("messages")
           .where("groupName", '==', this.firstGroupName)
+          .where("myName", '==', this.userId)
           .get()
           .then((querySnapshot) => {
                 if (querySnapshot.size === 0) {
@@ -224,6 +226,7 @@ export default {
       const _data = {            // data()에 있는 데이터가 바로 들어갈 수 없다.
         chatName: this.chatName,
         groupName: this.firstGroupName,
+        myName: this.userId,
         chatArr: [
           {
             content: '채팅을 시작해주세요',
@@ -243,8 +246,11 @@ export default {
     },
     sendMessage(message) {
       console.log(message)
+      const target = document.getElementById('sendBtn');
+      target.disabled = true;
       const data ={
-        text: this.message
+        text: this.message,
+        index_name: "doc"
       }
       const path = `${'http://127.0.0.1:8002'}/chat`;
       axios
@@ -277,7 +283,7 @@ export default {
             })
             // uid: this.uid
           })
-          .then(() => {
+          .then(async () => {
             this.saveGptMessage(res)
             this.created()
           })
@@ -290,6 +296,8 @@ export default {
           .onSnapshot(snapshot => {
             this.messages = snapshot.data()
             console.log('33', this.messages)
+            const target = document.getElementById('sendBtn');
+            target.disabled = false;
             // `this.messages` 값 업데이트 후, 이후 로직 처리
           })
     },
@@ -319,7 +327,7 @@ export default {
       this.$router.push('/userInfo')
     },
     goGroupSet() {
-      this.$router.push('/setGroup')
+      this.$router.push('/myGroupSet')
     },
     goDocUpload() {
       this.$router.push('/docUpload')
@@ -338,7 +346,7 @@ export default {
 .chat {
   display: flex;
   flex-direction: column;
-  margin-left: 40vh;
+  margin-left: 35vh;
   height: 100%;
 }
 
@@ -358,13 +366,19 @@ export default {
 }
 
 .CatGPTMessage {
-  background-color: #cfd9df;
-  padding: 30px;
+  background-color: #f6f6f6;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 35vh;
+  padding-right: 35vh;
   text-align: left;
 }
 
 .myMessage {
-  padding: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 35vh;
+  padding-right: 35vh;
   text-align: left;
 }
 
@@ -373,6 +387,10 @@ export default {
   flex-grow: 1;
   overflow-y: scroll;
   padding: 10px;
+}
+
+.existMessage{
+  text-align: right;
 }
 
 .messages div {
@@ -415,7 +433,7 @@ export default {
   background-color: #0e2842;
 }
 
-td:hover{
+.sideTable td:hover{
   background-color: #2c3e50;
   border-radius: 20px;
   cursor: pointer;
@@ -463,6 +481,10 @@ button:hover{
 /* 스크롤바가 활성화(마우스 클릭)된 상태 */
 .sideTable::-webkit-scrollbar-thumb:hover {
   background-color: #999; /* 스크롤바의 색상 */
+}
+
+#sendBtn[disabled] {
+  opacity: 0.1;
 }
 
 </style>
