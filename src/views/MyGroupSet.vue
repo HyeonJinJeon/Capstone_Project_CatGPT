@@ -100,7 +100,7 @@ export default {
       const db = firebase.firestore();
       const _data = {
         uid: self.userId,
-        name: self.userInfo.engName,
+        name: self.userInfo.name,
       }
       const _data2 = {
         enterCode: self.newCode,
@@ -119,7 +119,11 @@ export default {
                 .update({groups: firebase.firestore.FieldValue.arrayUnion(_data2)})
                 .then(() => {
                   alert("그룹 생성완료")
-                  self.$router.go()
+                  delete localStorage.groupCode
+                  delete localStorage.groupName
+                  localStorage.groupCode = _data2.enterCode
+                  localStorage.groupName = _data2.groupName
+                  self.$router.go();
                 })
           })
     },
