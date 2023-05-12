@@ -1,9 +1,12 @@
 import uvicorn
 import openai
 import json
+from hwp_reader import get_hwp_text
 from fastapi import FastAPI, HTTPException, Request
 from starlette.middleware.cors import CORSMiddleware
 from elasticsearch import Elasticsearch
+from fastapi import FastAPI, File, UploadFile
+from typing import List
 from key import api_key
 
 openai.api_key = api_key
@@ -12,6 +15,7 @@ origins = [
 ]
 
 app = FastAPI()
+#CORS 보안 설정
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -35,16 +39,20 @@ async def create(index_name):
     return True
 
 @app.post("/upload", description="upload_txt")
-async def upload(index_name, title, content):
-    if not es.indices.exists(index = index_name):
-        print(f"index({index_name}) is not in es")
-        return False
-    doc = {
-        "title" : title,
-        "content": content
-    }
-    es.index(index=index_name, document=doc)
-    print(es.count(index= index_name))
+async def upload(index_name: str, files: List[UploadFile] = File(...)):
+    for file in files:
+        contents = await file.read()
+        with open(file.filename, "wb") as f:
+            f.write(contents)
+        content = get_hwp_text(file.filename)
+        if not es.indices.exists(index = index_name):
+            print(f"index({index_name}) is not in es")
+            return False
+        doc = {
+            "title" : file.filename,
+            "content": content
+        }
+        es.index(index=index_name, document=doc)
     return True
 
 messages = [
