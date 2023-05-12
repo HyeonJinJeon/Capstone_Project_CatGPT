@@ -2,7 +2,7 @@
 <div>
   <label for="folderName" class="grey-text" style="margin:10px">폴더 추가</label> <br>
   <input v-model="setFolder" type="text" id="folderName">
-  <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="selected">
+  <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="folderName">
     <option selected disabled hidden value="">폴더를 선택해주세</option>
     <option
         v-for="(folderName) in folderNames"
@@ -13,8 +13,9 @@
     </option>
   </select>
   <label for="uploadFile" class="grey-text" style="margin:10px">문서 저장</label> <br>
-  <input name="file" type="file" class="form-control" ref="fileInput" accept=".hwp,.doc,.docx,.pdf" id="uploadFile"  multiple>
-  <button @click="uploadFile">업로드 하기</button>
+<!--  <input name="file" type="file" class="form-control" ref="fileInput" accept=".hwp,.doc,.docx,.pdf" id="uploadFile"  multiple>-->
+  <input type="file" multiple @change="onFileChange">
+  <button @click="uploadFiles">업로드 하기</button>
 </div>
 </template>
 
@@ -30,7 +31,7 @@ export default {
       userName: this.$store.state.user.displayName,
       selected:'',
       setFolder: '',
-      firstGroupName: localStorage.groupName,
+      groupName: localStorage.groupName,
       fbCollection: 'documents',
       folderName: '',
       folderNames: [],
@@ -56,27 +57,48 @@ export default {
             });
           })
     },
-    uploadFile() {
-      const formData = new FormData();
-      formData.append('file', this.file);
-      axios.post('http://localhost:8002/upload', formData,{
-        "index_name": this.folderName + this.firstGroupName
-      }, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-      }
-      })
-          .then(response => {
-            console.log(response.data);
-            alert("업로드 완료")
-          })
-          .catch(error => {
-            console.log(error);
-          });
+    // uploadFile() {
+    //   const file = this.$refs.fileInput.files[0];
+    //   let formData = new FormData();
+    //   formData.append('file', file);
+    //   console.log(file)
+    //
+    //   axios.post('http://localhost:8002/upload', formData,{
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data'
+    //     } })
+    //       .then(response => {
+    //         console.log(response.data);
+    //         alert("업로드 완료")
+    //       })
+    //       .catch(error => {
+    //         console.log(error);
+    //       });
+    // },
+    onFileChange(event) {
+      this.files = event.target.files
     },
-    changeFolder() {
-
+    async uploadFiles() {
+      const formData = new FormData()
+      for (let i = 0; i < this.files.length; i++) {
+        formData.append('files', this.files[i])
+      }
+      formData.append('text', this.groupName + this.folderName)
+      console.log(this.folderName)
+      try {
+        const response = await axios.post('http://localhost:8002/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        console.log(response.data)
+      } catch (error) {
+        console.log(error)
+      }
     }
+  },
+  changeFolder() {
+
   }
 }
 </script>
