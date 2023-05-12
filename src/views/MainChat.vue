@@ -26,6 +26,17 @@
         </option>
       </select>
       <span> <button class="btn-outline-light-blue" @click="groupChange(selected)" style="margin-left: 1vh; width: 9vh; height: 5vh; border-radius: 10px">그룹 변경</button></span> <br>
+      <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="selected">
+        <option selected disabled hidden value="">문서집을 설정해주세요</option>
+        <option
+            v-for="(groupName, i) in groupNames"
+            :key="groupName"
+            v-text="groupName"
+            :value="enterCodes[i]"
+            @mousedown="changeChat(selected)">
+        </option>
+      </select>
+      <span> <button class="btn-outline-light-blue" @click="groupChange(selected)" style="margin-left: 1vh; width: 9vh; height: 5vh; border-radius: 10px">폴더 변경</button></span> <br>
       <button class="btn-outline-light-blue" style="border-radius: 10px; width: 33vh; height: 7vh; color: white; font-size: 20px; margin-bottom: 3vh" @click="modal=true">
         <i class="fas fa-comment-medical"></i> 새로운 채팅
       </button>
