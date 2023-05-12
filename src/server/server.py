@@ -5,7 +5,7 @@ from hwp_reader import get_hwp_text
 from fastapi import FastAPI, HTTPException, Request
 from starlette.middleware.cors import CORSMiddleware
 from elasticsearch import Elasticsearch
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from typing import List
 from key import api_key
 
@@ -39,7 +39,13 @@ async def create(index_name):
     return True
 
 @app.post("/upload", description="upload_txt")
-async def upload(index_name: str, files: List[UploadFile] = File(...)):
+async def upload(files: List[UploadFile]=File(...), text = Form(...)):
+    index_name = text
+    print(index_name)
+    if not es.indices.exists(index = index_name):
+        with open("setting.json") as f:
+                setting = json.load(f)
+        es.indices.create(index=index_name, body= setting)
     for file in files:
         contents = await file.read()
         with open(file.filename, "wb") as f:
