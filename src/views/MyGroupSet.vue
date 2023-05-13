@@ -1,56 +1,56 @@
 <template>
-  <v-app>
-    <v-main>
-      <div class="backgroundImg">
-        <div class="black-bg">
-          <div class="center">
-            <div class="title">
-              <p>
-                <span style="font-size:100px;">C</span>
-                <span style="font-size:50px;">at </span>
-                <span style="font-size:100px;">-</span>
-                <span style="font-size:100px;">GPT</span>
-              </p>
+  <div class="backgroundImg">
+    <div class="black-bg">
+<!--      <MainSideBar></MainSideBar>-->
+<!--      <i v-b-toggle.sidebar-1 id="sidebar_openBtn" class="fas fa-bars"-->
+<!--         style="position: absolute; z-index:3; margin-top: 30px; margin-left: 30px; color:white;"></i>-->
+      <div class="title">
+        <span style="font-size:60px;">Group Setting</span>
+        <br><br><br><br>
+      </div>
+      <div class="center">
+        <div class="white-bg">
+          <p class="h4 text-center mb-4" style="color: black">그룹 설정</p>
+          <hr>
+          <div style="margin-top:50px;">
+            <h3 class="h4 mb-4" style="color: black;">
+              그룹 생성
+            </h3>
+            <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">그룹 이름</label>-->
+            <div class="input-line">
+              <input v-model="groupName" type="text" class="form-control" placeholder="생성할 그룹 이름을 입력해주세요"/>
+              <button class="confirmBtn" type="submit" @click="newGroup">등록</button>
             </div>
-            <div class="white-bg">
-              <p class="h4 text-center mb-4" style="color: black">그룹 설정 <span><i class="fas fa-utensils"></i></span></p>
-              <hr>
-              <div style="margin-top:50px;">
-                <h3 class="h4 mb-4" style="color: black;">
-                  <b-icon icon="circle-fill" font-scale="0.5"></b-icon>
-                  그룹 생성
-                </h3>
-                <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">그룹 이름</label>-->
-                <div class="input-line">
-                  <input v-model="groupName" type="text" class="form-control" placeholder="생성할 그룹 이름을 입력해주세요"/>
-                  <button class="confirmBtn" type="submit" @click="newGroup">등록</button>
-                </div>
-              </div>
+          </div>
 
-              <div style="margin-top: 100px;">
-                <h3 class="h4 mb-4" style="color: black;">
-                  <b-icon icon="circle-fill" font-scale="0.5"></b-icon>
-                  기존 그룹이 있다면
-                </h3>
-                <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">입장 코드</label>-->
-                <div class="input-line">
-                  <input v-model="enterCode" type="text" class="form-control" placeholder="입장코드를 입력해주세요."/>
-                  <button class="confirmBtn" type="submit" @click="existGroup">등록</button>
-                </div>
-              </div>
+          <div style="margin-top: 100px;">
+            <h3 class="h4 mb-4" style="color: black;">
+              기존 그룹이 있다면
+            </h3>
+            <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">입장 코드</label>-->
+            <div class="input-line">
+              <input v-model="enterCode" type="text" class="form-control" placeholder="입장코드를 입력해주세요."/>
+              <button class="confirmBtn" type="submit" @click="existGroup">등록</button>
             </div>
           </div>
         </div>
+        <div class="groupList">
+          <ShowGroup></ShowGroup>
+        </div>
       </div>
-    </v-main>
-  </v-app>
+
+    </div>
+  </div>
 </template>
 
 <script>
 import {firebase} from "@/firebase/firebaseConfig";
+// import MainSideBar from "@/components/MainSideBar.vue";
+import ShowGroup from "@/components/ShowGroup.vue";
 
 export default {
-  name: "GroupSet",
+  name: "GroupMaster",
+  components: {ShowGroup},
   data() {
     return {
       fbCollection: "users",
@@ -62,7 +62,9 @@ export default {
       groupInfo: [],
       randomStr: Math.random().toString(36).substring(2, 12),
       enterCodes: [],
-
+      groups: [],
+      ownerCheck: false,
+      alreadyEnroll: false,
     }
   },
   mounted() {
@@ -84,6 +86,12 @@ export default {
           .get()
           .then((snapshot) => {
             self.userInfo = snapshot.data();
+            self.groups.push(self.userInfo.groups);
+            for (let i = 0; i <= self.groups.length; i++) {
+              self.enterCodes.push(self.groups[0][i].enterCode);
+            }
+            console.log("enterCodes", self.enterCodes)
+
           })
     },
     newGroup() {
@@ -115,7 +123,7 @@ export default {
                   delete localStorage.groupName
                   localStorage.groupCode = _data2.enterCode
                   localStorage.groupName = _data2.groupName
-                  self.$router.push('/mainChat')
+                  self.$router.go();
                 })
           })
     },
@@ -133,9 +141,18 @@ export default {
               const _data = doc.data();
               _data.id = doc.id
               self.groupInfo = _data;
+              for (let i = 0; i < self.enterCodes.length; i++) {
+                if (self.enterCodes[i] == self.enterCode) {
+                  self.alreadyEnroll = true;
+                  alert("이미 등록된 코드입니다.")
+                  self.enterCode='';
+                }
+              }
+              if(self.alreadyEnroll == false) {
+                self.setGroupMember();
+              }
             });
-            self.setGroupMember()
-            // console.log(self.groupInfo)
+
           })
     },
     setGroupMember() {    //기존 그룹 등록할 때 users와 group에 정보 넣어주는 함수
@@ -149,31 +166,20 @@ export default {
         uid: self.userId,
         name: self.userInfo.engName,
       }
-      db.collection("users")    //users에 등록한 그룹 정보 저장
-          .doc(self.userId)
-          .update({
-            groups:  firebase.firestore.FieldValue.delete(),
-          })
-          .then(() => {
-            db.collection("users")    //users에 등록한 그룹 정보 저장
-                .doc(self.userId)
-                .update({
-                  groups:  firebase.firestore.FieldValue.arrayUnion(_data1),
-                })
-                .then(() => {
-                  db.collection("group")    //group에 유저 정보 저장
-                      .doc(self.groupInfo.id)
-                      .update({member: firebase.firestore.FieldValue.arrayUnion(_data2)})
-                  alert("등록 완료!")
-                  delete localStorage.groupCode;
-                  delete localStorage.groupName;
-                  localStorage.groupCode = self.enterCode;
-                  localStorage.groupName = self.groupInfo.groupName;
-                  self.$router.push('/mainChat')
-                })
-          })
       // console.log(_data1)
       // console.log(_data2)
+
+      db.collection("users")    //users에 등록한 그룹 정보 저장
+          .doc(self.userId)
+          .update({groups: firebase.firestore.FieldValue.arrayUnion(_data1)})
+          .then(() => {
+            db.collection("group")    //group에 유저 정보 저장
+                .doc(self.groupInfo.id)
+                .update({member: firebase.firestore.FieldValue.arrayUnion(_data2)})
+            alert("등록 완료!")
+            // self.$router.push('/mainPg')
+          })
+
     },
 
   }
@@ -182,7 +188,7 @@ export default {
 
 <style scoped>
 .backgroundImg {
-  background-image: url("../assets/images/startBackground.jpg");
+  /*background-image: url("../assets/images/startBackGround.jpg");*/
   background-color: rgba(0, 0, 0, 0.5);
   height: 100vh;
   width: 100%;
@@ -194,34 +200,34 @@ export default {
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
   position: fixed;
-  padding: 50px;
 }
 
 .center {
-  /*position: absolute;*/
-  width: 700px;
+  position: absolute;
+  left: 15%;
+  width: 90%;
   margin: auto;
   /*text-align: center;*/
 }
 
 .title {
   /*text-align: center;*/
-  margin-top: 20vh;
   font-style: normal;
   font-weight: 700;
-  line-height: 59px;
+  margin-top: 100px;
+  /*line-height: 59px;*/
   color: #FFFFFF;
-
   text-shadow: 0px 8px 4px rgba(0, 0, 0, 0.25);
 }
 
 .white-bg {
-  max-width: 700px;
+  position: absolute;
+  width: 45%;
+  height: 500px;
   align: center;
-  background: white;
+  background-color: white;
   border-radius: 8px;
   padding: 50px;
-  position: relative;
   /*top: 25%;*/
   /*left: 24vh;*/
   margin: 0 auto;
@@ -248,5 +254,31 @@ export default {
   background-color: #2c3e50;
   border-radius: 2px;
   color: white;
+}
+
+.groupList {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.2);
+  align: center;
+  float: right;
+  width: 25%;
+  height: 500px;
+  right: 20%;
+  /*overflow: auto;*/
+  padding: 20px;
+  border-radius: 15px;
+  margin: 0 auto;
+
+
+  /*position: absolute;*/
+  /*width: 40%;*/
+  /*height: 500px;*/
+  /*align: center;*/
+  /*background-color: white;*/
+  /*border-radius: 8px;*/
+  /*padding: 50px;*/
+  /*!*top: 25%;*!*/
+  /*!*left: 24vh;*!*/
+  /*margin: 0 auto;*/
 }
 </style>
