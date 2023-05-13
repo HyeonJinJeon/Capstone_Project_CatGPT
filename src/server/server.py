@@ -91,7 +91,7 @@ async def chat(req:Request):
     else:
         answer = "해당 질문에 대한 문서를 찾지 못했습니다 따라서 해당 답변은 chat gpt에서 문서 정보 없이 생성한 문장입니다. \n \n"
         chat = text
-    messages.append({"role": "user", "content": f"{chat} 그리고 모든 문장 끝에는 냥><으로 해줘"})
+    messages.append({"role": "user", "content": f"{chat}"})
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages
