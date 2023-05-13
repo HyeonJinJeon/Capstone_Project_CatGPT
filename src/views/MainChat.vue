@@ -12,31 +12,34 @@
         </h3>
         <h6 style="color: #FFFFFF;">
           현재 그룹 : {{firstGroupName}}
+          <br>
+          현재 문서집 : {{folderName}}
         </h6>
         <hr style="color: white;">
       </div>
+
       <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="selected">
         <option selected disabled hidden value="">그룹을 설정해주세요</option>
         <option
             v-for="(groupName, i) in groupNames"
             :key="groupName"
             v-text="groupName"
-            :value="enterCodes[i]"
-            @mousedown="changeChat(selected)">
+            :value="enterCodes[i]">
         </option>
       </select>
       <span> <button class="btn-outline-light-blue" @click="groupChange(selected)" style="margin-left: 1vh; width: 9vh; height: 5vh; border-radius: 10px">그룹 변경</button></span> <br>
-      <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="selected">
+
+      <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="selectedFolder">
         <option selected disabled hidden value="">문서집을 설정해주세요</option>
         <option
-            v-for="(groupName, i) in groupNames"
-            :key="groupName"
-            v-text="groupName"
-            :value="enterCodes[i]"
-            @mousedown="changeChat(selected)">
+            v-for="(folderName) in folderNames"
+            :key="folderName"
+            v-text="folderName"
+            :value="folderName">
         </option>
       </select>
-      <span> <button class="btn-outline-light-blue" @click="groupChange(selected)" style="margin-left: 1vh; width: 9vh; height: 5vh; border-radius: 10px">폴더 변경</button></span> <br>
+      <span> <button class="btn-outline-light-blue" @click="changeFolder(selectedFolder)" style="margin-left: 1vh; width: 9vh; height: 5vh; border-radius: 10px">폴더 변경</button></span> <br>
+
       <button class="btn-outline-light-blue" style="border-radius: 10px; width: 33vh; height: 7vh; color: white; font-size: 20px; margin-bottom: 3vh" @click="modal=true">
         <i class="fas fa-comment-medical"></i> 새로운 채팅
       </button>
@@ -113,6 +116,7 @@ export default {
   data() {
     return {
       userId: this.$store.state.user.uid,
+      userName: this.$store.state.user.displayName,
       fbCollection: 'users',
       modal: false,
       selected:'',
@@ -122,6 +126,9 @@ export default {
       groupNames: [],
       groupName: [],
       enterCodes: [],
+      folderName: localStorage.folderName,
+      selectedFolder: '',
+      folderNames: [],
       chatName: '',
       chatList: [],
       selectedChat: '',
@@ -129,11 +136,13 @@ export default {
       selectedChatId: '',
       messages: [],
       message: '',
+      indexName: localStorage.indexName,
       cnt: -1
     }
   },
   mounted() {
     this.getChatList()
+    this.getFolderName()
     this.getData()
   },
   methods: {
@@ -177,6 +186,33 @@ export default {
             });
           })
     },
+    getFolderName() {
+      const self = this;
+      const db = firebase.firestore();
+      db.collection("documents")
+          .where("groupName", "==", self.firstGroupName)
+          .where("userName", "==", self.userName)
+          .get()
+          .then(async (querySnapshot) => {
+            if (querySnapshot.size === 0) {
+              return
+            }
+            querySnapshot.forEach((doc) => {
+              const _data = doc.data();
+              _data.id = doc.id
+              // const date = new Date(_data.date.seconds * 1000);
+              // _data.date = getDate(date);
+              self.folderNames.push(_data.folderName);
+              console.log(self.folderNames)
+            });
+          })
+    },
+    changeFolder(folderName){
+      localStorage.folderName = folderName
+      this.indexName = localStorage.groupName + folderName;
+      localStorage.indexName = this.indexName
+      this.$router.go();
+    },
     async groupChange(selected) {    //현재 그룹 변경
       const self = this;
       await this.getGroupName()
@@ -188,6 +224,9 @@ export default {
           localStorage.groupCode = self.enterCodes[i]
         }
       }
+      delete localStorage.indexName
+      localStorage.folderName = '문서집을 선택해주세요'
+      console.log(this.indexName)
       this.$router.go();
 
     },
@@ -261,7 +300,7 @@ export default {
       target.disabled = true;
       const data ={
         text: this.message,
-        index_name: "doc"
+        index_name: this.indexName
       }
       const path = `${'http://127.0.0.1:8002'}/chat`;
       axios
