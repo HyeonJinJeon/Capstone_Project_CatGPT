@@ -9,6 +9,8 @@
           <span>
 <!--            <button class="logOutBtn" @click="logout">Logout</button>-->
           </span>
+          <br>
+
         </h3>
         <h6 style="color: #FFFFFF;">
           현재 그룹 : {{firstGroupName}}
@@ -43,7 +45,7 @@
       <button class="btn-outline-light-blue" style="border-radius: 10px; width: 33vh; height: 7vh; color: white; font-size: 20px; margin-bottom: 3vh" @click="modal=true">
         <i class="fas fa-comment-medical"></i> 새로운 채팅
       </button>
-      <div class="sideTable" style="height:30vh; overflow:auto;">
+      <div class="sideTable" style="height:22vh; overflow:auto;">
         <table class="table" border="0" style="margin-left: auto; margin-right: auto; color: white; border-top-color:#061524;  border-color: #061524; border-radius: 10px;">
           <thead>
           <tr>
@@ -88,7 +90,7 @@
           : &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
         </div>
         <div v-if="message.userName!='Cat-GPT'" class="myMessage">
-          {{ message.userName }}: &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
+           {{ message.content }}&nbsp;&nbsp;&nbsp;&nbsp; : {{ message.userName }}
         </div>
       </div>
     </div>
@@ -419,17 +421,21 @@ export default {
   background-color: #f6f6f6;
   padding-top: 30px;
   padding-bottom: 30px;
-  padding-left: 35vh;
-  padding-right: 35vh;
+  /*padding-left: 35vh;*/
+  /*padding-right: 35vh;*/
+  width: 750px;
+  margin: 0 auto;
   text-align: left;
 }
 
 .myMessage {
-  padding-top: 30px;
-  padding-bottom: 30px;
-  padding-left: 35vh;
-  padding-right: 35vh;
-  text-align: left;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  /*padding-left: 35vh;*/
+  /*padding-right: 35vh;*/
+  width: 750px;
+  margin: 0 auto;
+  text-align: right;
 }
 
 .messages {
