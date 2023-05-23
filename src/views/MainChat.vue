@@ -1,6 +1,7 @@
 <template>
   <div>
     <AddChat v-if="modal" @childData="chatName=$event, newChat()" @closeModal ="modal = false" :modal="modal"></AddChat>
+    <UploadDoc v-if="docModal" @closeModal ="docModal = false" :docModal="docModal"></UploadDoc>
     <div class="side">
       <div>
         <br>
@@ -69,7 +70,7 @@
         <br>
         <p @click="goGroupSet">그룹 관리</p>
         <br>
-        <p @click="goDocUpload">문서 업로드</p>
+        <p @click="docModal = true">문서 업로드</p>
         <br>
         <p @click="logout">로그아웃</p>
         <br>
@@ -107,6 +108,7 @@ import {firebase} from "@/firebase/firebaseConfig";
 import axios from "axios";
 import AddChat from "@/components/AddChat.vue";
 import addChat from "@/components/AddChat.vue";
+import UploadDoc from "@/components/UploadDoc.vue";
 
 export default {
   computed: {
@@ -114,13 +116,14 @@ export default {
       return addChat
     }
   },
-  components: {AddChat},
+  components: {UploadDoc, AddChat},
   data() {
     return {
       userId: this.$store.state.user.uid,
       userName: this.$store.state.user.displayName,
       fbCollection: 'users',
       modal: false,
+      docModal: false,
       selected:'',
       firstGroupName: localStorage.groupName,
       groups: [],
@@ -381,9 +384,9 @@ export default {
     goGroupSet() {
       this.$router.push('/myGroupSet')
     },
-    goDocUpload() {
-      this.$router.push('/docUpload')
-    },
+    // goDocUpload() {
+    //   this.$router.push('/docUpload')
+    // },
     logout() {
       delete localStorage.groupCode
       delete localStorage.groupName
