@@ -1,41 +1,45 @@
 <template>
-<div>
-  <label for="folderName" class="grey-text" style="margin:10px">새로운 문서집 추가</label> <br>
-  <div style="display: flex; justify-content: center; align-items: center;">
-    <input class="form-control" v-model="setFolder" type="text" id="folderName" style="width: 23vh" placeholder="문서집 이름 작성">
-  </div>
-  <br>
-  <button class="btn btn-indigo" style="color: white" @click="addFolder" >새로운 문서집 추가</button>
-  <br>
-  <br>
-  <br>
-  <label for="uploadFile" class="grey-text" style="margin:10px">문서 저장</label> <br>
-  <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="folderName">
-    <option selected disabled hidden value="">문서집을 선택해주세요</option>
-    <option
-        v-for="(folderName) in folderNames"
-        :key="folderName"
-        v-text="folderName"
-        :value="folderName"
-        @mousedown="changeFolder(selected)">
-    </option>
-  </select>
-  <br>
-<!--  <input name="file" type="file" class="form-control" ref="fileInput" accept=".hwp,.doc,.docx,.pdf" id="uploadFile"  multiple>-->
-  <div style="display: flex; justify-content: center; align-items: center;">
-    <input type="file" class="form-control" style="width: 23vh;" multiple @change="onFileChange">
-  </div>
-  <br>
-  <button class="btn btn-indigo" style="color: white" @click="uploadFiles">업로드 하기</button>
-</div>
-</template>
+  <div v-if="docModal === true" class="black-bg">
+    <div class="white-bg">
+<br>
+      <label for="folderName" class="grey-text" style="margin:10px">새로운 문서집 추가</label> <br>
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <input class="form-control" v-model="setFolder" type="text" id="folderName" style="width: 23vh" placeholder="문서집 이름 작성">
+      </div>
+      <br>
+      <button class="btn btn-indigo" style="color: white" @click="addFolder" >새로운 문서집 추가</button>
+      <br>
+      <br>
+      <br>
+      <label for="uploadFile" class="grey-text" style="margin:10px">문서 저장</label> <br>
+      <select class="form-select form-select-lg mb-3" style="width: 23vh; display: inline-block;" v-model="folderName">
+        <option selected disabled hidden value="">문서집을 선택해주세요</option>
+        <option
+            v-for="(folderName) in folderNames"
+            :key="folderName"
+            v-text="folderName"
+            :value="folderName"
+            @mousedown="changeFolder(selected)">
+        </option>
+      </select>
+      <br>
+      <!--  <input name="file" type="file" class="form-control" ref="fileInput" accept=".hwp,.doc,.docx,.pdf" id="uploadFile"  multiple>-->
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <input type="file" class="form-control" style="width: 23vh;" multiple @change="onFileChange">
+      </div>
+      <br>
+      <button class="btn btn-indigo" style="color: white" @click="uploadFiles">업로드 하기</button>
 
+      <button class="btn btn-indigo" style="color: white" @click="$emit('closeModal')">닫기</button>
+    </div>
+  </div>
+</template>
 <script>
 import {firebase} from "@/firebase/firebaseConfig";
 import axios from "axios";
 
 export default {
-  name: "docUpload",
+  name: "UploadDoc",
   data() {
     return {
       userId: this.$store.state.user.uid,
@@ -128,12 +132,26 @@ export default {
       }
     }
   },
-  changeFolder() {
-
-  }
+  props : {
+    docModal : Boolean,
+  },
 }
 </script>
 
 <style scoped>
+.black-bg {
+  width: 100%; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  position: absolute; padding: 20px;
+}
 
+.white-bg {
+  width: 700px; background: white;
+  height: 500px;
+  border-radius: 8px;
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+}
 </style>
