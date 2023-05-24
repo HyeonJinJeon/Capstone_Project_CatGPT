@@ -1,6 +1,8 @@
 <template>
   <div>
     <AddChat v-if="modal" @childData="chatName=$event, newChat()" @closeModal ="modal = false" :modal="modal"></AddChat>
+    <UploadDoc v-if="docModal" @closeModal ="docModal = false" :docModal="docModal"></UploadDoc>
+    <UserInfo v-if="userInfoModal" @closeModal ="userInfoModal = false" :userInfoModal="userInfoModal"></UserInfo>
     <div class="side">
       <div>
         <br>
@@ -65,11 +67,11 @@
       <div class="sideBottom">
         <br>
         <br>
-        <p @click="goUserInfo">회원정보 수정</p>
+        <p @click="userInfoModal = true">회원정보 수정</p>
         <br>
         <p @click="goGroupSet">그룹 관리</p>
         <br>
-        <p @click="goDocUpload">문서 업로드</p>
+        <p @click="docModal = true">문서 업로드</p>
         <br>
         <p @click="logout">로그아웃</p>
         <br>
@@ -107,6 +109,8 @@ import {firebase} from "@/firebase/firebaseConfig";
 import axios from "axios";
 import AddChat from "@/components/AddChat.vue";
 import addChat from "@/components/AddChat.vue";
+import UploadDoc from "@/components/UploadDoc.vue";
+import UserInfo from "@/components/UserInfo.vue";
 
 export default {
   computed: {
@@ -114,13 +118,15 @@ export default {
       return addChat
     }
   },
-  components: {AddChat},
+  components: {UserInfo, UploadDoc, AddChat},
   data() {
     return {
       userId: this.$store.state.user.uid,
       userName: this.$store.state.user.displayName,
       fbCollection: 'users',
       modal: false,
+      docModal: false,
+      userInfoModal: false,
       selected:'',
       firstGroupName: localStorage.groupName,
       groups: [],
@@ -375,15 +381,15 @@ export default {
       )
       this.message = ''
     },
-    goUserInfo() {
-      this.$router.push('/userInfo')
-    },
+    // goUserInfo() {
+    //   this.$router.push('/userInfo')
+    // },
     goGroupSet() {
       this.$router.push('/myGroupSet')
     },
-    goDocUpload() {
-      this.$router.push('/docUpload')
-    },
+    // goDocUpload() {
+    //   this.$router.push('/docUpload')
+    // },
     logout() {
       delete localStorage.groupCode
       delete localStorage.groupName
