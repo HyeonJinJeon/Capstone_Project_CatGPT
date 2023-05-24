@@ -36,11 +36,6 @@ const router = new Router({
       component: () => import('./views/MainChat'),
     },
     {
-      path: '/userInfo',
-      name: 'UserInfo',
-      component: () => import('./views/UserInfo'),
-    },
-    {
       path: '/myGroupSet',
       name: 'MyGroupSet',
       component: () => import('./views/MyGroupSet'),
