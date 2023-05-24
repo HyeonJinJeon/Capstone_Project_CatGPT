@@ -1,20 +1,29 @@
 <template>
-<div>
-  <h4><b style="margin: 10px">{{userInfo.nickName}}</b></h4>
-  <button class="btn-mdb-color" @click="confirmEdit">
-    <b-icon icon="pencil-fill" aria-hidden="true"></b-icon> Settings
-  </button>
-  <!--        <b-icon icon="pencil-fill" font-scale="1" @click="editInfo"></b-icon>-->
-
-  <div>
-    <label for="name" class="grey-text" style="margin:10px">Name</label>
-    <input v-model="userInfo.name" type="text" id="name" class="form-control" >
-    <label for="name" class="grey-text" style="margin:10px">Phone</label>
-    <input v-model="userInfo.phoneNum" type="text" id="name" class="form-control">
-    <label for="name" class="grey-text" style="margin:10px">로그인 방식</label>
-    <input v-model="userInfo.howLogin" type="text" id="name" class="form-control" disabled/>
+  <div v-if="userInfoModal === true" class="black-bg">
+    <div class="white-bg">
+      <br>
+    <h4><b style="margin: 10px">회원정보 수정</b></h4>
+      <br>
+    <!--        <b-icon icon="pencil-fill" font-scale="1" @click="editInfo"></b-icon>-->
+      <label for="name" class="grey-text" style="margin:10px">Name</label>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <input v-model="userInfo.name" style="width: 400px;" type="text" id="name" class="form-control" >
+    </div>
+      <label for="name" class="grey-text" style="margin:10px">Phone</label>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <input v-model="userInfo.phoneNum" style="width: 400px;" type="text" id="name" class="form-control">
+    </div>
+      <label for="name" class="grey-text" style="margin:10px">로그인 방식</label>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <input v-model="userInfo.howLogin" style="width: 400px;" type="text" id="name" class="form-control" disabled/>
+    </div>
+      <br><br>
+      <button class="btn btn-indigo" style="color: white" @click="confirmEdit">
+        <b-icon icon="pencil-fill" aria-hidden="true"></b-icon> 수정완료
+      </button>
+      <button class="btn btn-indigo" style="color: white" @click="$emit('closeModal')">닫기</button>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -130,12 +139,28 @@ export default {
     //         });
     //       })
     // },
-
+  },
+  props : {
+    userInfoModal : Boolean,
   },
 }
 
 </script>
 
 <style scoped>
+.black-bg {
+  width: 100%; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  position: absolute; padding: 20px;
+}
 
+.white-bg {
+  width: 700px; background: white;
+  height: 500px;
+  border-radius: 8px;
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+}
 </style>

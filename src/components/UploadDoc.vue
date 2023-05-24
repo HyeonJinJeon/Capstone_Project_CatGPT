@@ -1,14 +1,14 @@
 <template>
   <div v-if="docModal === true" class="black-bg">
     <div class="white-bg">
-<br>
+      <br>
+      <h4><b style="margin: 10px">문서집 생성 및 문서 업로드</b></h4>
+      <br>
       <label for="folderName" class="grey-text" style="margin:10px">새로운 문서집 추가</label> <br>
       <div style="display: flex; justify-content: center; align-items: center;">
         <input class="form-control" v-model="setFolder" type="text" id="folderName" style="width: 23vh" placeholder="문서집 이름 작성">
+        <button class="btn btn-indigo" style="color: white" @click="addFolder" >새로운 문서집 추가</button>
       </div>
-      <br>
-      <button class="btn btn-indigo" style="color: white" @click="addFolder" >새로운 문서집 추가</button>
-      <br>
       <br>
       <br>
       <label for="uploadFile" class="grey-text" style="margin:10px">문서 저장</label> <br>
