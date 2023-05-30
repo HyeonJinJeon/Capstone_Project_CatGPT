@@ -18,8 +18,7 @@
             v-for="(folderName) in folderNames"
             :key="folderName"
             v-text="folderName"
-            :value="folderName"
-            @mousedown="changeFolder(selected)">
+            :value="folderName">
         </option>
       </select>
       <br>
