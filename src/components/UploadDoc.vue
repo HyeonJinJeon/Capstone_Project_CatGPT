@@ -125,6 +125,7 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
         })
+        alert("저장되었습니다")
         console.log(response.data)
       } catch (error) {
         console.log(error)

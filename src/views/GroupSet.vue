@@ -17,7 +17,6 @@
               <hr>
               <div style="margin-top:50px;">
                 <h3 class="h4 mb-4" style="color: black;">
-                  <b-icon icon="circle-fill" font-scale="0.5"></b-icon>
                   그룹 생성
                 </h3>
                 <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">그룹 이름</label>-->

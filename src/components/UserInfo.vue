@@ -88,6 +88,7 @@ export default {
           .set(_data, {merge: true} )
           .then(() => {
             alert("수정 완료!")
+            this.$router.go();
           })
     },
     codeInput() {   //입장코드 등록 함수

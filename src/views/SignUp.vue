@@ -7,16 +7,19 @@
           <label for="defaultFormRegisterNameEx" class="grey-text">이름</label>
           <input v-model="name" type="text" id="defaultFormRegisterNameEx" class="form-control" maxlength=10
                  @change="validateName(name)"/>
+          <br>
         </div>
         <div>
           <label for="defaultFormRegisterNameEx" class="grey-text">닉네임</label>
           <input v-model="nickName" type="text" id="defaultFormRegisterNameEx" class="form-control" maxlength="10"
                  @change="validateNickName(nickName)"/>
+          <br>
         </div>
         <div>
           <label for="defaultFormRegisterConfirmEx" class="grey-text">전화번호</label>
           <input v-model="phoneNum" type="text" id="defaultFormRegisterConfirmEx" class="form-control" maxlength="13"
                  oninput="javascript: this.value = this.value.replace(/[^0-9]/, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);"/>
+          <br>
         </div>
         <div>
           <label for="defaultFormRegisterEmailEx" class="grey-text">아이디</label>
@@ -25,17 +28,20 @@
                    class="form-control" @change="validateId(id)" placeholder="영문자+숫자 조합" />
             <button class="btn btn-indigo" type="submit" @click="overlapCheckId(id)" style="color: white; width: 90px; height: 35px;">중복확인</button>
           </div>
+          <br>
         </div>
         <div>
           <label for="defaultFormRegisterConfirmEx" class="grey-text">비밀번호</label>
           <input v-model="password" type="password" id="defaultFormRegisterConfirmEx" class="form-control"
                  @change="validatePw(password)" placeholder="영문자+숫자+특수문자 조합"/>
+          <br>
         </div>
         <div>
           <label for="defaultFormRegisterPasswordEx" class="grey-text">비밀번호 확인</label>
           <input v-model="comparePassword" type="password" id="defaultFormRegisterPasswordEx" class="form-control"
                  @change="passwordConfirm" v-on:keypress.enter.prevent=signup>
           <h10>{{ compare }}</h10>
+          <br>
         </div>
         <div class="text-center mt-4">
           <button class="btn btn-indigo" type="submit" @click="signup" style="color: white;">회원가입</button>
@@ -228,9 +234,10 @@ export default {
   border-radius: 8px;
   padding: 50px;
   position: absolute;
-  top: 25%;
+  top: 14%;
   left: 24%;
   margin: -50px 0 0 -50px;
+  text-align: left;
 }
 .ImButton {
   height: 38px !important;

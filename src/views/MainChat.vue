@@ -86,10 +86,15 @@
         <h1>Cat-GPT</h1>
         <p>채팅을 시작하세요</p>
       </div>
-      <div class="existMessage" v-for="message in messages.chatArr" :key="message.id">
+      <div class="existMessage" v-for="(message, i) in messages.chatArr" :key="message.id">
         <div v-if="message.userName=='Cat-GPT'" class="CatGPTMessage">
           <img src="../assets/images/catGPT.jpg" height="40px" width="40px"/>
           : &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
+<!--          <br>-->
+<!--          &nbsp;&nbsp;-->
+<!--          <i @click="toggleLike(i)" class="far fa-thumbs-up">-->
+<!--            {{ isLiked[i] ? '좋아요 취소' : '좋아요' }}-->
+<!--          </i>-->
         </div>
         <div v-if="message.userName!='Cat-GPT'" class="myMessage">
            {{ message.content }}&nbsp;&nbsp;&nbsp;&nbsp; : {{ message.userName }}
@@ -145,7 +150,8 @@ export default {
       messages: [],
       message: '',
       indexName: localStorage.indexName,
-      cnt: -1
+      cnt: -1,
+      isLiked: [],
     }
   },
   mounted() {
@@ -374,6 +380,7 @@ export default {
               userName: 'Cat-GPT',
               content: res,
               createdAt: new Date(),
+              isLiked: false,
             })
             // uid: this.uid
           }).then(
@@ -395,7 +402,23 @@ export default {
       delete localStorage.groupName
       firebase.auth().signOut()
       this.$router.push('/')
-    }
+    },
+    toggleLike(i) {
+      // const self = this;
+      // const db = firebase.firestore();
+      // const _data = {
+      //   isLiked: true
+      // }
+      // db.collection('messages')
+      //     .doc(self.userId)
+      //     .update(_data)
+      //     .then(() => {
+      //       alert("수정 완료!")
+      //     })
+      console.log(i)
+      console.log(this.isLiked[i])
+      this.isLiked[i] = !this.isLiked[i]
+    },
   }
 }
 </script>

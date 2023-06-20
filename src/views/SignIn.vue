@@ -63,6 +63,7 @@ export default {
               this.$router.push('/setGroup')
             } else {
               delete localStorage.groupCode
+              delete localStorage.folderName
               localStorage.groupCode = self.userGroups[0].enterCode;
               localStorage.groupName = self.userGroups[0].groupName;
               alert('로그인 완료')
