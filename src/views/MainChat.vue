@@ -9,7 +9,6 @@
         <h3 style="color: #FFFFFF;">
           {{ userInfo.name }}
           <span>
-<!--            <button class="logOutBtn" @click="logout">Logout</button>-->
           </span>
           <br>
 
@@ -90,11 +89,6 @@
         <div v-if="message.userName=='Cat-GPT'" class="CatGPTMessage">
           <img src="../assets/images/catGPT.jpg" height="40px" width="40px"/>
           : &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
-<!--          <br>-->
-<!--          &nbsp;&nbsp;-->
-<!--          <i @click="toggleLike(i)" class="far fa-thumbs-up">-->
-<!--            {{ isLiked[i] ? '좋아요 취소' : '좋아요' }}-->
-<!--          </i>-->
         </div>
         <div v-if="message.userName!='Cat-GPT'" class="myMessage">
            {{ message.content }}&nbsp;&nbsp;&nbsp;&nbsp; : {{ message.userName }}
@@ -175,9 +169,6 @@ export default {
               self.groupNames.push(self.groups[0][i].groupName);
               self.enterCodes.push(self.groups[0][i].enterCode)
             }
-            // console.log(self.groupNames)
-            // console.log(self.enterCodes)
-            // }
           })
     },
     getGroupName() {
@@ -193,8 +184,6 @@ export default {
             querySnapshot.forEach((doc) => {
               const _data = doc.data();
               _data.id = doc.id
-              // const date = new Date(_data.date.seconds * 1000);
-              // _data.date = getDate(date);
               self.groupName.push(_data.groupName);
               console.log(self.groupName)
             });
@@ -214,8 +203,6 @@ export default {
             querySnapshot.forEach((doc) => {
               const _data = doc.data();
               _data.id = doc.id
-              // const date = new Date(_data.date.seconds * 1000);
-              // _data.date = getDate(date);
               self.folderNames.push(_data.folderName);
               console.log(self.folderNames)
             });
@@ -336,7 +323,6 @@ export default {
       if (this.message.trim() === '') {
         return
       }
-      // const { displayName, uid } = auth.currentUser
       db.collection('messages')
           .doc(this.selectedChatId)
           .update({
@@ -345,7 +331,6 @@ export default {
               content: this.message,
               createdAt: new Date(),
             })
-            // uid: this.uid
           })
           .then(async () => {
             this.saveGptMessage(res)
@@ -372,7 +357,6 @@ export default {
     saveGptMessage(res) {
       console.log('222', res)
       const db = firebase.firestore();
-      // const { displayName, uid } = auth.currentUser
       db.collection('messages')
           .doc(this.selectedChatId)
           .update({
@@ -382,42 +366,19 @@ export default {
               createdAt: new Date(),
               isLiked: false,
             })
-            // uid: this.uid
           }).then(
           this.scrollToBottom
       )
       this.message = ''
     },
-    // goUserInfo() {
-    //   this.$router.push('/userInfo')
-    // },
     goGroupSet() {
       this.$router.push('/myGroupSet')
     },
-    // goDocUpload() {
-    //   this.$router.push('/docUpload')
-    // },
     logout() {
       delete localStorage.groupCode
       delete localStorage.groupName
       firebase.auth().signOut()
       this.$router.push('/')
-    },
-    toggleLike(i) {
-      // const self = this;
-      // const db = firebase.firestore();
-      // const _data = {
-      //   isLiked: true
-      // }
-      // db.collection('messages')
-      //     .doc(self.userId)
-      //     .update(_data)
-      //     .then(() => {
-      //       alert("수정 완료!")
-      //     })
-      console.log(i)
-      console.log(this.isLiked[i])
-      this.isLiked[i] = !this.isLiked[i]
     },
   }
 }

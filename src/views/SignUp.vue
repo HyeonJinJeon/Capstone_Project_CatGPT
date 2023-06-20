@@ -215,7 +215,6 @@ export default {
 
 <style scoped>
 .backgroundImg {
-  /*background-image: url("../assets/images/startBackground.jpg");*/
   background-color:rgba(0, 0, 0, 0.5);
   height: 100vh;
   width: 100%;

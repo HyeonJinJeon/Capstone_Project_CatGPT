@@ -19,7 +19,6 @@
                 <h3 class="h4 mb-4" style="color: black;">
                   그룹 생성
                 </h3>
-                <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">그룹 이름</label>-->
                 <div class="input-line">
                   <input v-model="groupName" type="text" class="form-control" placeholder="생성할 그룹 이름을 입력해주세요"/>
                   <button class="confirmBtn" type="submit" @click="newGroup">등록</button>
@@ -31,7 +30,6 @@
                   <b-icon icon="circle-fill" font-scale="0.5"></b-icon>
                   기존 그룹이 있다면
                 </h3>
-                <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">입장 코드</label>-->
                 <div class="input-line">
                   <input v-model="enterCode" type="text" class="form-control" placeholder="입장코드를 입력해주세요."/>
                   <button class="confirmBtn" type="submit" @click="existGroup">등록</button>
@@ -76,7 +74,6 @@ export default {
     },
     getData() {
       const self = this;
-      // console.log(userId)
       const db = firebase.firestore();
       db.collection(self.fbCollection)
           .doc(self.userId)
@@ -87,7 +84,6 @@ export default {
     },
     newGroup() {
       const self = this;
-      // console.log(self.userId)
       const db = firebase.firestore();
       const _data = {
         uid: self.userId,
@@ -134,7 +130,6 @@ export default {
               self.groupInfo = _data;
             });
             self.setGroupMember()
-            // console.log(self.groupInfo)
           })
     },
     setGroupMember() {    //기존 그룹 등록할 때 users와 group에 정보 넣어주는 함수
@@ -171,8 +166,6 @@ export default {
                   self.$router.push('/mainChat')
                 })
           })
-      // console.log(_data1)
-      // console.log(_data2)
     },
 
   }
@@ -197,14 +190,11 @@ export default {
 }
 
 .center {
-  /*position: absolute;*/
   width: 700px;
   margin: auto;
-  /*text-align: center;*/
 }
 
 .title {
-  /*text-align: center;*/
   margin-top: 20vh;
   font-style: normal;
   font-weight: 700;
@@ -221,18 +211,9 @@ export default {
   border-radius: 8px;
   padding: 50px;
   position: relative;
-  /*top: 25%;*/
-  /*left: 24vh;*/
   margin: 0 auto;
 }
 
-/*.ImButton {*/
-/*  height: 38px !important;*/
-/*  white-space: nowrap;*/
-/*  margin: 0 0 0 10px !important;*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*}*/
 .input-line {
   display: flex;
   height: 38px;

@@ -1,9 +1,6 @@
 <template>
   <div class="backgroundImg">
     <div class="black-bg">
-<!--      <MainSideBar></MainSideBar>-->
-<!--      <i v-b-toggle.sidebar-1 id="sidebar_openBtn" class="fas fa-bars"-->
-<!--         style="position: absolute; z-index:3; margin-top: 30px; margin-left: 30px; color:white;"></i>-->
       <div class="title">
         <span style="font-size:60px;">Group Setting</span>
         <br><br><br><br>
@@ -16,7 +13,6 @@
             <h3 class="h4 mb-4" style="color: black;">
               그룹 생성
             </h3>
-            <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">그룹 이름</label>-->
             <div class="input-line">
               <input v-model="groupName" type="text" class="form-control" placeholder="생성할 그룹 이름을 입력해주세요"/>
               <button class="confirmBtn" type="submit" @click="newGroup">등록</button>
@@ -27,7 +23,6 @@
             <h3 class="h4 mb-4" style="color: black;">
               기존 그룹이 있다면
             </h3>
-            <!--                <label for="defaultFormRegisterEmailEx" class="grey-text">입장 코드</label>-->
             <div class="input-line">
               <input v-model="enterCode" type="text" class="form-control" placeholder="입장코드를 입력해주세요."/>
               <button class="confirmBtn" type="submit" @click="existGroup">등록</button>
@@ -45,7 +40,6 @@
 
 <script>
 import {firebase} from "@/firebase/firebaseConfig";
-// import MainSideBar from "@/components/MainSideBar.vue";
 import ShowGroup from "@/components/ShowGroup.vue";
 
 export default {
@@ -166,9 +160,6 @@ export default {
         uid: self.userId,
         name: self.userInfo.engName,
       }
-      // console.log(_data1)
-      // console.log(_data2)
-
       db.collection("users")    //users에 등록한 그룹 정보 저장
           .doc(self.userId)
           .update({groups: firebase.firestore.FieldValue.arrayUnion(_data1)})
@@ -177,7 +168,6 @@ export default {
                 .doc(self.groupInfo.id)
                 .update({member: firebase.firestore.FieldValue.arrayUnion(_data2)})
             alert("등록 완료!")
-            // self.$router.push('/mainPg')
           })
 
     },
@@ -188,7 +178,6 @@ export default {
 
 <style scoped>
 .backgroundImg {
-  /*background-image: url("../assets/images/startBackGround.jpg");*/
   background-color: rgba(0, 0, 0, 0.5);
   height: 100vh;
   width: 100%;
@@ -207,15 +196,12 @@ export default {
   left: 15%;
   width: 90%;
   margin: auto;
-  /*text-align: center;*/
 }
 
 .title {
-  /*text-align: center;*/
   font-style: normal;
   font-weight: 700;
   margin-top: 100px;
-  /*line-height: 59px;*/
   color: #FFFFFF;
   text-shadow: 0px 8px 4px rgba(0, 0, 0, 0.25);
 }
@@ -228,18 +214,9 @@ export default {
   background-color: white;
   border-radius: 8px;
   padding: 50px;
-  /*top: 25%;*/
-  /*left: 24vh;*/
   margin: 0 auto;
 }
 
-/*.ImButton {*/
-/*  height: 38px !important;*/
-/*  white-space: nowrap;*/
-/*  margin: 0 0 0 10px !important;*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*}*/
 .input-line {
   display: flex;
   height: 38px;
@@ -264,21 +241,8 @@ export default {
   width: 25%;
   height: 500px;
   right: 20%;
-  /*overflow: auto;*/
   padding: 20px;
   border-radius: 15px;
   margin: 0 auto;
-
-
-  /*position: absolute;*/
-  /*width: 40%;*/
-  /*height: 500px;*/
-  /*align: center;*/
-  /*background-color: white;*/
-  /*border-radius: 8px;*/
-  /*padding: 50px;*/
-  /*!*top: 25%;*!*/
-  /*!*left: 24vh;*!*/
-  /*margin: 0 auto;*/
 }
 </style>
