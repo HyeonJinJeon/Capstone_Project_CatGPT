@@ -23,17 +23,8 @@ export default {
       chatName: ''
     }
   },
-  watch : {
-
-  },
   props : {
     modal : Boolean,
-  },
-  created() {
-
-  },
-  mounted() {
-
   },
   methods: {
     sendData(){
