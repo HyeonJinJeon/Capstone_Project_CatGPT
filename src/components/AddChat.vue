@@ -3,11 +3,11 @@
     <div class="white-bg">
       <br>
       <h4><b style="margin: 10px">새로운 채팅</b></h4>
-      <br>
+      <br><br><br><br><br><br><br>
       <div style="display: flex; justify-content: center; align-items: center;">
         <input class="form-control" type="text" v-model="chatName" style="width: 400px" placeholder="채팅방 이름을 작성해주세요">
       </div>
-      <br><br>
+      <br><br><br><br><br><br><br>
       <button class="btn btn-indigo addBtn" style="color: white;" @click="sendData">추가</button>
       <button class="btn btn-indigo closeBtn" style="color: white" @click="$emit('closeModal')">닫기</button>
     </div>
@@ -23,17 +23,8 @@ export default {
       chatName: ''
     }
   },
-  watch : {
-
-  },
   props : {
     modal : Boolean,
-  },
-  created() {
-
-  },
-  mounted() {
-
   },
   methods: {
     sendData(){
@@ -45,7 +36,6 @@ export default {
 </script>
 
 <style scoped>
-
 body {
   margin : 0;
 }

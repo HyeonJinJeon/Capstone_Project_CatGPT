@@ -9,7 +9,6 @@
 
         <tr v-for="(group,i) in groupNames" :key="i">
           <td style="font-weight: 400;"><span style="font-weight: bold">{{ group }}</span><br> 입장코드: {{ enterCodes[i] }}</td>
-          <!--        <td><img class="img1" :src="memoryList.image"/></td>-->
           <i style="margin-top: 40px" class="fas fa-trash" @click="deleteGroup(group, enterCodes[i])"></i>
         </tr>
         </tbody>
@@ -64,8 +63,6 @@ export default {
           })
     },
     async deleteGroup(group, enterCode) {
-      // const self = this;
-      // const db = firebase.firestore();
       const self = this;
       const db = firebase.firestore();
       await db.collection("group")
@@ -96,30 +93,12 @@ export default {
                   db.collection('users')
                       .doc(this.userId)
                       .update({
-                        // groups :
                       })
                 })
             alert("삭제 완료")
             self.$router.go();
           })
     },
-    getGroupUid(group){
-      console.log('111',group)
-      const self = this;
-      const db = firebase.firestore();
-      db.collection("group")
-          .where('groupName', '==', group)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              // const _data = doc.data();
-              self.groupUid = doc.id
-              console.log(self.groupUid)
-            });
-          })
-    }
-    // 그룹 uid 가져와야됨!!!!!!!!!! 그래야 그룹 삭제할 수 있음 그니까 이거 코드부터 작성할것
-  },
 }
 </script>
 

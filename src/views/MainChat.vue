@@ -9,7 +9,6 @@
         <h3 style="color: #FFFFFF;">
           {{ userInfo.name }}
           <span>
-<!--            <button class="logOutBtn" @click="logout">Logout</button>-->
           </span>
           <br>
 
@@ -86,7 +85,7 @@
         <h1>Cat-GPT</h1>
         <p>채팅을 시작하세요</p>
       </div>
-      <div class="existMessage" v-for="message in messages.chatArr" :key="message.id">
+      <div class="existMessage" v-for="(message, i) in messages.chatArr" :key="message.id">
         <div v-if="message.userName=='Cat-GPT'" class="CatGPTMessage">
           <img src="../assets/images/catGPT.jpg" height="40px" width="40px"/>
           : &nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}
@@ -145,7 +144,8 @@ export default {
       messages: [],
       message: '',
       indexName: localStorage.indexName,
-      cnt: -1
+      cnt: -1,
+      isLiked: [],
     }
   },
   mounted() {
@@ -169,9 +169,6 @@ export default {
               self.groupNames.push(self.groups[0][i].groupName);
               self.enterCodes.push(self.groups[0][i].enterCode)
             }
-            // console.log(self.groupNames)
-            // console.log(self.enterCodes)
-            // }
           })
     },
     getGroupName() {
@@ -187,8 +184,6 @@ export default {
             querySnapshot.forEach((doc) => {
               const _data = doc.data();
               _data.id = doc.id
-              // const date = new Date(_data.date.seconds * 1000);
-              // _data.date = getDate(date);
               self.groupName.push(_data.groupName);
               console.log(self.groupName)
             });
@@ -208,8 +203,6 @@ export default {
             querySnapshot.forEach((doc) => {
               const _data = doc.data();
               _data.id = doc.id
-              // const date = new Date(_data.date.seconds * 1000);
-              // _data.date = getDate(date);
               self.folderNames.push(_data.folderName);
               console.log(self.folderNames)
             });
@@ -330,7 +323,6 @@ export default {
       if (this.message.trim() === '') {
         return
       }
-      // const { displayName, uid } = auth.currentUser
       db.collection('messages')
           .doc(this.selectedChatId)
           .update({
@@ -339,7 +331,6 @@ export default {
               content: this.message,
               createdAt: new Date(),
             })
-            // uid: this.uid
           })
           .then(async () => {
             this.saveGptMessage(res)
@@ -366,7 +357,6 @@ export default {
     saveGptMessage(res) {
       console.log('222', res)
       const db = firebase.firestore();
-      // const { displayName, uid } = auth.currentUser
       db.collection('messages')
           .doc(this.selectedChatId)
           .update({
@@ -374,28 +364,22 @@ export default {
               userName: 'Cat-GPT',
               content: res,
               createdAt: new Date(),
+              isLiked: false,
             })
-            // uid: this.uid
           }).then(
           this.scrollToBottom
       )
       this.message = ''
     },
-    // goUserInfo() {
-    //   this.$router.push('/userInfo')
-    // },
     goGroupSet() {
       this.$router.push('/myGroupSet')
     },
-    // goDocUpload() {
-    //   this.$router.push('/docUpload')
-    // },
     logout() {
       delete localStorage.groupCode
       delete localStorage.groupName
       firebase.auth().signOut()
       this.$router.push('/')
-    }
+    },
   }
 }
 </script>

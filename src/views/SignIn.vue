@@ -54,15 +54,14 @@ export default {
             }
             querySnapshot.forEach((doc) => {
               self.userInfo = doc.data();
-              // self.curGroupUid = doc.id
               self.userGroups = self.userInfo.groups;
-              // console.log('userGroups 첫번째', self.userGroups[0].enterCode)
             });
             if (self.userInfo.groups == '') {
               alert('그룹이 존재하지 않습니다. 그룹설정 페이지로 이동합니다.')
               this.$router.push('/setGroup')
             } else {
               delete localStorage.groupCode
+              delete localStorage.folderName
               localStorage.groupCode = self.userGroups[0].enterCode;
               localStorage.groupName = self.userGroups[0].groupName;
               alert('로그인 완료')
@@ -82,7 +81,6 @@ export default {
 
 <style scoped>
 .backgroundImg {
-  /*background-image: url("../assets/images/startBackground.jpg");*/
   background-color:rgba(0, 0, 0, 0.5);
   height: 100vh;
   width: 100%;
