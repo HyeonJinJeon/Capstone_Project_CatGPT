@@ -74,53 +74,13 @@ export default {
           .then((snapshot) => {
             self.userInfo = snapshot.data();
             self.groups.push(self.userInfo.groups);
-            // console.log(self.groups.length)
             for(let i=0; i < self.groups[0].length; i++) {
               // for(let j=0; j < self.groups[i].length; i++) {
               self.groupNames.push(self.groups[0][i].groupName);
               self.enterCodes.push(self.groups[0][i].enterCode)
             }
-            // console.log(self.groupNames)
-            // console.log(self.enterCodes)
-            // }
           })
     },
-    // getGroupName() {
-    //   const self = this;
-    //   const db = firebase.firestore();
-    //   db.collection("group")
-    //       .where("groupCode", "==", localStorage.groupCode)
-    //       .get()
-    //       .then(async (querySnapshot) => {
-    //         if (querySnapshot.size === 0) {
-    //           return
-    //         }
-    //         querySnapshot.forEach((doc) => {
-    //           const _data = doc.data();
-    //           _data.id = doc.id
-    //           // const date = new Date(_data.date.seconds * 1000);
-    //           // _data.date = getDate(date);
-    //           self.groupName.push(_data.groupName);
-    //           console.log(self.groupName)
-    //         });
-    //       })
-    // },
-    // async groupChange(selected) {    //현재 그룹 변경
-    //   const self = this;
-    //   await this.getGroupName()
-    //   console.log(this.groupName[0])
-    //   delete localStorage.groupCode
-    //   delete localStorage.groupName
-    //   localStorage.groupCode = selected
-    //   localStorage.groupName = this.groupName[0]
-    //   for(let i =0; i<self.groups[0].length; i++) {
-    //     if(self.enterCodes[i] == selected) {
-    //       localStorage.groupName = self.groupNames[i]
-    //     }
-    //   }
-    //   this.$router.go();
-    //
-    // },
     logout() {
       delete localStorage.groupCode
       delete localStorage.groupName
@@ -133,7 +93,6 @@ export default {
 </script>
 
 <style scoped>
-
 .groupSetBtn {
   width: 90px;
   height: 28px;

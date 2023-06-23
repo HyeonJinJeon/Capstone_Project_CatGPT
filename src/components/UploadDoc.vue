@@ -18,8 +18,7 @@
             v-for="(folderName) in folderNames"
             :key="folderName"
             v-text="folderName"
-            :value="folderName"
-            @mousedown="changeFolder(selected)">
+            :value="folderName">
         </option>
       </select>
       <br>
@@ -92,24 +91,6 @@ export default {
             this.$router.go();
           })
     },
-    // uploadFile() {
-    //   const file = this.$refs.fileInput.files[0];
-    //   let formData = new FormData();
-    //   formData.append('file', file);
-    //   console.log(file)
-    //
-    //   axios.post('http://localhost:8002/upload', formData,{
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data'
-    //     } })
-    //       .then(response => {
-    //         console.log(response.data);
-    //         alert("업로드 완료")
-    //       })
-    //       .catch(error => {
-    //         console.log(error);
-    //       });
-    // },
     onFileChange(event) {
       this.files = event.target.files
     },
@@ -126,6 +107,7 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
         })
+        alert("저장되었습니다")
         console.log(response.data)
       } catch (error) {
         console.log(error)

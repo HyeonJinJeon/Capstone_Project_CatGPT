@@ -12,12 +12,8 @@
 
 
       <div class ="simpleLogin">
-        <!--        <div class="google">-->
         <button class = "googleLoginButton white btn-outline-white" @click="googleLogin"><img style="float: left;" class = "googleImg" src = "@/assets/images/googleImage.png">Sign in with Google</button>
-        <!--        </div>-->
-        <!--        <div class="kakao">-->
         <button class = "kakaoLoginButton btn-outline-yellow" @click="kakaoLogin"><img style="float: left;" class = "kakaoImg" src = "@/assets/images/kakaologo.png">Sign in with kakao</button>
-        <!--        </div>-->
       </div>
 
       <div class="textLink">
@@ -108,7 +104,6 @@ export default {
                   const id = kakao_account.email
                   this.login(id);
                 }
-                // self.$router.push("/mainMAp");
               })
 
         },
@@ -149,12 +144,9 @@ a {
 .title {
   position: absolute;
   width: 30%;
-  /*height: 40%;*/
-  /*left: 10px;*/
   margin-left: 0;
   top: 25vh;
 
-  /*font-family: 'Roboto';*/
   font-style: normal;
   font-weight: 700;
   font-size: 500px;
@@ -201,15 +193,11 @@ h3{
   width: 300px;
   height: 60px;
   top:60vh;
-  /*margin: auto;*/
-  /*display: inline-block;*/
-
   font-size:23px;
   line-height: 50px;
   text-align: center;
   background: white;
   color: gray;
-  /*border: solid 2px grey;*/
   border-radius: 12px;
 }
 .kakaoLoginButton {
@@ -217,28 +205,18 @@ h3{
   width: 300px;
   height: 60px;
   top:61vh;
-
   font-size:23px;
   line-height: 50px;
   text-align: center;
   background: #fdd101;
   color: saddlebrown;
-  /*border: solid 2px grey;*/
   border-radius: 12px;
-  /*margin: auto;*/
-  /*display: block;*/
 }
 .googleImg {
-  /*position: relative;*/
-  /*left: 40px;*/
-  /*top: 78.8%;*/
   width: 40px;
   height: 40px;
 }
 .kakaoImg {
-  /*position: relative;*/
-  /*left: 40px;*/
-  /*top: 73.8%;*/
   width: 40px;
   height: 40px;
 }
@@ -263,12 +241,6 @@ h3{
   margin: 0 auto;
   padding:10px;
 }
-/*.google {*/
-
-/*}*/
-/*.kakao {*/
-/*  padding-top:10px;*/
-/*}*/
 .textLink {
   position: relative;
   top: -4vh;
