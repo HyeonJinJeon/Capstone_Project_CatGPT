@@ -7,3 +7,7 @@
 - 가동서버 : [Firebase](https://firebase.google.com/), [Python](https://www.python.org/), [elasticsearch](https://www.elastic.co/kr/elasticsearch/)
 
 ## 프로그램 기능 및 사용법
+<p>메인 채팅 화면</p>
+<img width="1680" alt="image" src="https://github.com/HyeonJinJeon/Capstone_Project_CatGPT/assets/40857551/62c8ec60-e016-468e-9c0b-1d583d58bf69">
+
+<
