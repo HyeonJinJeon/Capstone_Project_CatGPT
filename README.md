@@ -5,6 +5,7 @@
 - 개발언어 : Vue.js
 - 개발환경 : [Github](https://github.com/), [WebStorm](https://www.jetbrains.com/webstorm/)
 - 가동서버 : [Firebase](https://firebase.google.com/), [Python](https://www.python.org/), [elasticsearch](https://www.elastic.co/kr/elasticsearch/)
+- 사용한 API : GPT 3.5
 
 ## 프로그램 기능 및 사용법
 <p>메인 채팅 화면</p>
